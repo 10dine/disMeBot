@@ -1,40 +1,40 @@
-import os
+import os 
 import re
-import shutil
-import asyncio
+import shutil   #to move files
+import asyncio  
 import discord
 from dotenv import load_dotenv
-from google_images_search import GoogleImagesSearch
+from google_images_search import GoogleImagesSearch #publicly available api (unoffical)
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-load_dotenv()
-TOKKE = os.getenv('DISCORD_TOKEN')
-GDK = os.getenv('GDev_api_key')
-GCS = os.getenv('Gcs_link')
+load_dotenv()  #loads .env
+TOKKE = os.getenv('DISCORD_TOKEN')              #gets token from env
+GDK = os.getenv('GDev_api_key')                 #get dev key
+GCS = os.getenv('Gcs_link')                     # gets custome search engine code
 
-client = discord.Client()
+client = discord.Client()                       # dont know honestly
 
-@client.event
+@client.event                                   # starts the discord thing i think
 
-async def on_message(message):
-    if message.content.startswith('+disMe'):
+async def on_message(message):                  #i think its a loop funtion that waits for command 
+    if message.content.startswith('+disMe'):    #checks if message starts with command
 
-        channel = message.channel
-        await channel.send('Command Recieved!')
-        msg = message.content
-        msg_list =re.split(':',msg)
+        channel = message.channel               #assigns the message channel a easier variable
+        await channel.send('Command Recieved!') #sends a confirmation
+        msg = message.content                   #takes the whole string of the message
+        msg_list =re.split(':',msg)             #splits the string into parts
 
-        s_params = {
-            'q' : msg_list[1],
+        s_params = {                            #parameters to use for google image search
+            'q' : msg_list[1],                  
             'num' : 1,
             'fileType': 'png'
         }
 
-        gis = GoogleImagesSearch(GDK, GCS)
+        gis = GoogleImagesSearch(GDK, GCS)      #sets up google search image class
 
-        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name='temp', width=256, height=256)
+        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name='temp', width=256, height=256) 
 
         img = Image.open('temp/temp.png')
         img1 = ImageDraw.Draw(img)
