@@ -2,7 +2,7 @@ from argparse import FileType
 from google_images_search import GoogleImagesSearch
 
 class GID:
-    def __init__(self, GDK, GCS, GIS, srch_in) -> None:
+    def __init__(self, GDK, GCS, srch_in) -> None:
         self.GDK = GDK
         self.GCS = GCS
         self.srch_in = srch_in
@@ -14,5 +14,5 @@ class GID:
             'num' : 1,
             'fileType': 'jpg'
         }
-        self.GIS.search(search_params=s_params, path_to_dir = '/', custom_image_name='temp')
+        self.GIS.search(search_params=s_params, path_to_dir = '/', custom_image_name='temp', width=256, height= 256)
         pass
