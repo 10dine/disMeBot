@@ -22,7 +22,7 @@ async def on_message(message):                  #i think its a loop funtion that
     if message.content.startswith('+disMe'):    #checks if message starts with command
 
         channel = message.channel               #assigns the message channel a easier variable
-        await channel.send('Command Recieved!') #sends a confirmation
+        await channel.send('Ok!') #sends a confirmation
         msg = message.content                   #takes the whole string of the message
         msg_list =re.split(':',msg)             #splits the string into parts
 
@@ -40,8 +40,8 @@ async def on_message(message):                  #i think its a loop funtion that
         img1 = ImageDraw.Draw(img)
         myFont = ImageFont.truetype('impact.ttf', 28)
 
-        img1.text((100,10), msg_list[2], font=myFont, fill = (192,192,192))
-        img1.text((80,226), msg_list[3], font=myFont, fill = (192,192,192))
+        img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
+        img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
         img.save("temp/temp2.png")
 
         shutil.move('temp/temp.png', 'temp.png')
