@@ -21,7 +21,9 @@ client = discord.Client()                       # dont know honestly
 async def on_message(message):                  #i think its a loop funtion that waits for command 
     if message.content.startswith('+disMe'):    #checks if message starts with command
         
-        shutil.rmtree('temp')               #deletes temp folder to save space
+        filelist = [ f for f in os.listdir('temp') if f.endswith(".png") ]
+        for f in filelist:
+            os.remove(os.path.join('temp/', f)) #deletes temp files to save space
 
         channel = message.channel          #assigns the message channel a easier variable
         mesid = message.id              
