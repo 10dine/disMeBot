@@ -11,8 +11,8 @@ from PIL import ImageFont
 
 load_dotenv()  #loads .env
 TOKKE = os.getenv('DISCORD_TOKEN')              #gets token from env
-GDK = os.getenv('GDev_api_key')                 #get dev key
-GCS = os.getenv('Gcs_link')                     # gets custome search engine code
+GDK = os.getenv('GDev_api_key')                 #get google dev key
+GCS = os.getenv('Gcs_link')                     # gets google custome search engine code
 
 client = discord.Client()                       # dont know honestly
 
@@ -21,7 +21,7 @@ client = discord.Client()                       # dont know honestly
 async def on_message(message):                  #i think its a loop funtion that waits for command 
     if message.content.startswith('+disMe'):    #checks if message starts with command
         
-        shutil.rmtree('temp')
+        shutil.rmtree('temp')               #deletes temp folder to save space
 
         channel = message.channel          #assigns the message channel a easier variable
         mesid = message.id              
@@ -38,11 +38,11 @@ async def on_message(message):                  #i think its a loop funtion that
 
         gis = GoogleImagesSearch(GDK, GCS)      #sets up google search image class
 
-        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name=mesidstr, width=256, height=256) 
+        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name=mesidstr, width=256, height=256) #cant set download to source folder
 
-        temp = 'temp/{}.png'.format(mesidstr)
+        temp = 'temp/{}.png'.format(mesidstr)   #makes variable for the path
 
-        img = Image.open(temp)
+        img = Image.open(temp)      #PIL stuff
         img1 = ImageDraw.Draw(img)
         myFont = ImageFont.truetype('impact.ttf', 28)
 
@@ -50,7 +50,7 @@ async def on_message(message):                  #i think its a loop funtion that
         img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
         img.save(temp)
 
-        await channel.send(file=discord.File(temp))
+        await channel.send(file=discord.File(temp)) #sends file
         await channel.send("does this work?")
 
         await asyncio.sleep(10)
