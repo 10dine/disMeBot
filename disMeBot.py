@@ -1,6 +1,6 @@
 import os 
 import re
-import shutil   #to move files
+import shutil
 import asyncio  
 import discord
 from dotenv import load_dotenv
@@ -20,9 +20,13 @@ client = discord.Client()                       # dont know honestly
 
 async def on_message(message):                  #i think its a loop funtion that waits for command 
     if message.content.startswith('+disMe'):    #checks if message starts with command
+        
+        shutil.rmtree('temp')
 
-        channel = message.channel               #assigns the message channel a easier variable
-        await channel.send('Ok!') #sends a confirmation
+        channel = message.channel          #assigns the message channel a easier variable
+        mesid = message.id              
+        mesidstr =str(mesid)
+        await channel.send('Ok!')               #sends a confirmation
         msg = message.content                   #takes the whole string of the message
         msg_list =re.split(':',msg)             #splits the string into parts
 
@@ -34,22 +38,19 @@ async def on_message(message):                  #i think its a loop funtion that
 
         gis = GoogleImagesSearch(GDK, GCS)      #sets up google search image class
 
-        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name='temp', width=256, height=256) 
+        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name=mesidstr, width=256, height=256) 
 
-        img = Image.open('temp/temp.png')
+        temp = 'temp/{}.png'.format(mesidstr)
+
+        img = Image.open(temp)
         img1 = ImageDraw.Draw(img)
         myFont = ImageFont.truetype('impact.ttf', 28)
 
         img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
         img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
-        img.save("temp/temp2.png")
+        img.save(temp)
 
-        shutil.move('temp/temp.png', 'temp.png')
-        shutil.move('temp/temp2.png', 'temp2.png')
-
-        fille = discord.File('temp2.png')
-
-        await channel.send(file=discord.File('temp2.png'))
+        await channel.send(file=discord.File(temp))
         await channel.send("does this work?")
 
         await asyncio.sleep(10)
