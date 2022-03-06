@@ -21,13 +21,19 @@ client = discord.Client()                       # dont know honestly
 async def on_message(message):                  #i think its a loop funtion that waits for command 
     if message.content.startswith('+disMe'):    #checks if message starts with command
         
-        filelist = [ f for f in os.listdir('temp') if f.endswith(".png") ]
-        for f in filelist:
-            os.remove(os.path.join('temp/', f)) #deletes temp files to save space
+        guild = str(message.guild)
+        guild_Dir = '{}'.format(guild)  #creates string path for directory for guild
+        guild_Dir_os = '{}/'.format(guild)
 
+        filelist = [ f for f in os.listdir(guild_Dir) if f.endswith(".png") or f.endswith('.jpg') ]
+        for f in filelist:
+            os.remove(os.path.join(guild_Dir_os, f)) #deletes temp files to save space
+
+        
         channel = message.channel          #assigns the message channel a easier variable
         mesid = message.id              
         mesidstr =str(mesid)
+
         await channel.send('Ok!')               #sends a confirmation
         msg = message.content                   #takes the whole string of the message
         msg_list =re.split(':',msg)             #splits the string into parts
@@ -35,25 +41,49 @@ async def on_message(message):                  #i think its a loop funtion that
         s_params = {                            #parameters to use for google image search
             'q' : msg_list[1],                  
             'num' : 1,
-            'fileType': 'png'
+            'fileType': 'jpg|png'
         }
 
         gis = GoogleImagesSearch(GDK, GCS)      #sets up google search image class
 
-        gis.search(search_params=s_params, path_to_dir='temp', custom_image_name=mesidstr, width=256, height=256) #cant set download to source folder
+        gis.search(search_params=s_params, path_to_dir=guild_Dir, custom_image_name=mesidstr, width=256, height=256) #cant set download to source folder
+        
+        pic_ext = ''
 
-        temp = 'temp/{}.png'.format(mesidstr)   #makes variable for the path
+        piclist = [ p for p in os.listdir(guild_Dir) ]
+        for p in piclist:
+            if p.endswith('png'):
+                pic_ext = 'png'
+            else:
+                pic_ext = 'jpg'
 
-        img = Image.open(temp)      #PIL stuff
-        img1 = ImageDraw.Draw(img)
+        picdir = '{}/{}.{}'.format(guild_Dir, mesidstr, pic_ext)   #makes variable for the path
+
+        img = Image.open(picdir)      #PIL stuff
+        if pic_ext=='jpg':
+            img1 = ImageDraw.Draw(img, "RGB")
+        else:
+            img1 = ImageDraw.Draw(img, "RGBA")
+        
         myFont = ImageFont.truetype('impact.ttf', 28)
 
-        img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
-        img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
-        img.save(temp)
+        # if img.mode == "JPEG":
+        #     img.save(output, format='JPEG', quality=95)
+        # else:
+        #     pass
+        print(str(img.mode))
+        if img.mode == "RGB":
+            img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
+            img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
+            img.save(picdir)
+        else:
+            img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
+            img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
+            img.save(picdir)
 
-        await channel.send(file=discord.File(temp)) #sends file
+        await channel.send(file=discord.File(picdir)) #sends file
         await channel.send("does this work?")
 
         await asyncio.sleep(10)
+
 client.run(TOKKE)
