@@ -59,27 +59,21 @@ async def on_message(message):                  #i think its a loop funtion that
 
         picdir = '{}/{}.{}'.format(guild_Dir, mesidstr, pic_ext)   #makes variable for the path
 
-        img = Image.open(picdir)      #PIL stuff
-        if pic_ext=='jpg':
-            img1 = ImageDraw.Draw(img, "RGB")
-        else:
-            img1 = ImageDraw.Draw(img, "RGBA")
-        
+        img = Image.open(picdir) #PIL stuff
+        img1 = ImageDraw.Draw(img) 
+
         myFont = ImageFont.truetype('impact.ttf', 28)
 
         # if img.mode == "JPEG":
         #     img.save(output, format='JPEG', quality=95)
         # else:
         #     pass
-        print(str(img.mode))
-        if img.mode == "RGB":
-            img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
-            img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
-            img.save(picdir)
-        else:
-            img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
-            img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
-            img.save(picdir)
+
+        img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
+        img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
+        if pic_ext=='jpg':
+            pic_ext="JPEG"
+        img.save(picdir)
 
         await channel.send(file=discord.File(picdir)) #sends file
         await channel.send("does this work?")
