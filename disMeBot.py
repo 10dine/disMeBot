@@ -25,7 +25,7 @@ async def on_message(message):                  #i think its a loop funtion that
         guild_Dir = '{}'.format(guild)  #creates string path for directory for guild
         guild_Dir_os = '{}/'.format(guild)
 
-        filelist = [ f for f in os.listdir(guild_Dir) if f.endswith(".png") or f.endswith('.jpg') ]
+        filelist = [ f for f in os.listdir(guild_Dir)]
         for f in filelist:
             os.remove(os.path.join(guild_Dir_os, f)) #deletes temp files to save space
 
@@ -46,7 +46,7 @@ async def on_message(message):                  #i think its a loop funtion that
 
         gis = GoogleImagesSearch(GDK, GCS)      #sets up google search image class
 
-        gis.search(search_params=s_params, path_to_dir=guild_Dir, custom_image_name=mesidstr, width=256, height=256) #cant set download to source folder
+        gis.search(search_params=s_params, path_to_dir=guild_Dir, custom_image_name=mesidstr) #cant set download to source folder
         
         pic_ext = ''
 
@@ -58,26 +58,22 @@ async def on_message(message):                  #i think its a loop funtion that
                 pic_ext = 'jpg'
 
         picdir = '{}/{}.{}'.format(guild_Dir, mesidstr, pic_ext)   #makes variable for the path
+        picdirsave = '{}/{}.png'.format(guild_Dir, mesidstr, pic_ext)
 
         img = Image.open(picdir) #PIL stuff
+        width, height = img.size
+        if p.endswith('jpg'):
+            img = img.convert("RGBA")
         img1 = ImageDraw.Draw(img) 
 
         myFont = ImageFont.truetype('impact.ttf', 28)
 
-        # if img.mode == "JPEG":
-        #     img.save(output, format='JPEG', quality=95)
-        # else:
-        #     pass
+        img1.text((width/2,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
+        img1.text((width/2,height-10), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
 
-        img1.text((128,10), msg_list[2], font=myFont, fill = (255,255,255), anchor='mt', stroke_width=2, stroke_fill=(0,0,0))
-        img1.text((128,246), msg_list[3], font=myFont, fill = (255,255,255), anchor='ms', stroke_width=2, stroke_fill=(0,0,0))
-        if pic_ext=='jpg':
-            pic_ext="JPEG"
-        img.save(picdir)
+        img.save(picdirsave)
 
-        await channel.send(file=discord.File(picdir)) #sends file
+        await channel.send(file=discord.File(picdirsave)) #sends file
         await channel.send("does this work?")
-
-        await asyncio.sleep(10)
 
 client.run(TOKKE)
